@@ -14,7 +14,7 @@ struct Result {
 
 void count_words(char character, int *vowels, int *consonants, int *others) {
 	if (isalpha(character)) {
-		if (string(VOWEL_LETTERS).find(character) != string::npos) {
+		if (string(VOWEL_LETTERS).find(tolower(character)) != string::npos) {
 			++(*vowels);
 		} else {
 			++(*consonants);
