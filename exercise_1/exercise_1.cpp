@@ -2,25 +2,25 @@
 #include <fstream>
 #include <cctype>
 
-#define VOWEL_LETTERS "aeiou"
-
 using namespace std;
 
+const string VOWEL_LETTERS = "aeiou";
+
 struct Result {
-	int vowels = 0;
-	int consonants = 0;
-	int others = 0;
+	int vowels{0};
+	int consonants{0};
+	int others{0};
 };
 
-void count_words(char character, int *vowels, int *consonants, int *others) {
+void count_words(char character, int& vowels, int& consonants, int& others) {
 	if (isalpha(character)) {
-		if (string(VOWEL_LETTERS).find(tolower(character)) != string::npos) {
-			++(*vowels);
+		if (VOWEL_LETTERS.find(tolower(character)) != string::npos) {
+			++vowels;
 		} else {
-			++(*consonants);
+			++consonants;
 		}
 	} else {
-		++(*others);
+		++others;
 	}
 };
 
@@ -31,14 +31,14 @@ int main(int argc, char **argv) {
 	if (argc == 1) {
 		cout<<"Enter words (q to quit):\n";
 			while ((cin >> word)&&(word != "q")) {
-				count_words(word[0], &result.vowels, &result.consonants,  &result.others);
+				count_words(word[0], result.vowels, result.consonants,  result.others);
 			}
 	} else {
 		ifstream input_file;
 		input_file.open(argv[1]);
 		if (input_file.is_open()) {
 			while (input_file>>word) {
-				count_words(word[0], &result.vowels, &result.consonants,  &result.others);
+				count_words(word[0], result.vowels, result.consonants,  result.others);
 			}
 			input_file.close();
 		} else {
