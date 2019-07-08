@@ -4,7 +4,7 @@
 
 using namespace std;
 
-const string VOWEL_LETTERS = "aeiou";
+const string VOWEL_LETTERS {"aeiou"};
 
 struct Result {
 	int vowels{0};
