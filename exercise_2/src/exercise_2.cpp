@@ -1,61 +1,99 @@
-#include <stdio.h>
-#include <limits.h>
+#include <cstdio>
+#include <climits>
 #include <iostream>
 #include <fstream>
+#include <vector>
+#include<unordered_set>
 
 using namespace std;
 
-int const VERTICES {8};
-int const ROOT {0};
+int const ROOT = {0};
 
-int minDistance(int distance[], bool isVisited[])
+struct Edge {
+	int from_vertice = {0};
+	int to_vertice = {0};
+	int weight = {0};
+};
+
+class Graph
 {
-   int min = INT_MAX, min_index;
-   for (int v = 0; v < VERTICES; v++)
-     if (isVisited[v] == false && distance[v] <= min)
-         min = distance[v], min_index = v;
-   return min_index;
-}
+	public:
+		Graph(vector<Edge> edges, int vertices);
+		~Graph() = default;
+		void setShortestPathes(void);
+		void printShortestPathes(void);
+	private:
+		vector< vector<int> > graph_matrix;
+		int size;
+		vector<int> distance;
+		int minDistance(vector<int> distance, bool isVisited[]);
+};
 
-void findShortestPath(int graph[VERTICES][VERTICES], int src)
+Graph::Graph(vector<Edge> edges, int vertices)
 {
-     int distance[VERTICES];
-     bool isVisited[VERTICES];
-     for (int i = 0; i < VERTICES; i++)
-        distance[i] = INT_MAX, isVisited[i] = false;
+	size = vertices;
+	graph_matrix.resize(size, vector<int> (size));
+	for (Edge edge: edges)
+		{
+		    graph_matrix[edge.from_vertice][edge.to_vertice] = edge.weight;
+			graph_matrix[edge.to_vertice][edge.from_vertice] = edge.weight;
+		};
+};
 
-     distance[src] = 0;
+int Graph::minDistance(vector<int> distance, bool isVisited[])
+{
+    int min = INT_MAX, min_index = 0;
+    for (int v = 0; v < size; ++v)
+        if (isVisited[v] == false && distance[v] <= min)
+            min = distance[v], min_index = v;
+    return min_index;
+};
 
-     for (int count = 0; count < VERTICES-1; count++)
-     {
-       int u = minDistance(distance, isVisited);
-       isVisited[u] = true;
+void Graph::setShortestPathes()
+{
+	bool isVisited[size] = {false};
+	for (int i = 0; i < size; ++i)
+	    distance.push_back(INT_MAX);
+	distance[ROOT] = 0;
 
-       for (int v = 0; v < VERTICES; v++)
-         if (!isVisited[v] && graph[u][v] && distance[u] != INT_MAX
-                           && distance[u]+graph[u][v] < distance[v])
-            distance[v] = distance[u] + graph[u][v];
-     }
-     for (int i = 0; i < VERTICES; i++)
-     	   cout << "From " << ROOT << " to " << i << ": " << distance[i] << endl;
-}
+	for (int count = 0; count < size-1; ++count)
+		{
+			int u = this -> minDistance(distance, isVisited);
+			isVisited[u] = true;
+
+			for (int v = 0; v < size; ++v)
+				if (!isVisited[v] && graph_matrix[u][v] && distance[u] != INT_MAX
+							      && distance[u]+graph_matrix[u][v] < distance[v])
+				    distance[v] = distance[u] + graph_matrix[u][v];
+		}
+};
+
+void Graph::printShortestPathes()
+{
+	for (int i = 0; i < size; ++i)
+		   cout << "From " << ROOT << " to " << i << ": " << distance[i] << endl;
+};
 
 int main()
 {
-    ifstream input_file("./src/task_2_example_graph.txt");
-	int graph[VERTICES][VERTICES] {0};
-	int from, to, weight;
-    if (input_file.is_open()) {
-		while (input_file >> from >> to >> weight) {
-			graph[from][to] = weight;
-			graph[to][from] = weight;
+	Edge edge;
+	vector<Edge> edges;
+	unordered_set<int> vertices;
+	ifstream input_file("./src/task_2_example_graph.txt");
+
+	if (input_file.is_open()) {
+		while (input_file >> edge.from_vertice >> edge.to_vertice >> edge.weight) {
+			edges.push_back(edge);
+			vertices.insert(edge.from_vertice);
+			vertices.insert(edge.to_vertice);
 		}
 		input_file.close();
 	} else {
 		cerr<<"Unable to open file." << endl;
 	}
-
-    findShortestPath(graph, ROOT);
+    Graph graph(edges, vertices.size());
+    graph.setShortestPathes();
+    graph.printShortestPathes();
 
     return 0;
 }
