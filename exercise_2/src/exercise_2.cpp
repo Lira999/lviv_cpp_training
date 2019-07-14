@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include<unordered_set>
+#include <unordered_set>
 
 using namespace std;
 
@@ -20,38 +20,41 @@ class Graph
 	public:
 		Graph(vector<Edge> edges, int vertices);
 		~Graph() = default;
-		void setShortestPathes(void);
-		void printShortestPathes(void);
+		void computePathes();
+		vector<int> getResult();
 	private:
 		vector< vector<int> > graph_matrix;
 		int size;
 		vector<int> distance;
-		int minDistance(vector<int> distance, bool isVisited[]);
+		int minDistance(const vector<int>& distance, const vector<bool>& isVisited);
 };
 
 Graph::Graph(vector<Edge> edges, int vertices)
 {
 	size = vertices;
 	graph_matrix.resize(size, vector<int> (size));
-	for (Edge edge: edges)
+	for (const auto& edge : edges)
 		{
 		    graph_matrix[edge.from_vertice][edge.to_vertice] = edge.weight;
 			graph_matrix[edge.to_vertice][edge.from_vertice] = edge.weight;
 		};
 };
 
-int Graph::minDistance(vector<int> distance, bool isVisited[])
+int Graph::minDistance(const vector<int>& distance, const vector<bool>& isVisited)
 {
     int min = INT_MAX, min_index = 0;
     for (int v = 0; v < size; ++v)
         if (isVisited[v] == false && distance[v] <= min)
-            min = distance[v], min_index = v;
+        {
+            min = distance[v];
+            min_index = v;
+        }
     return min_index;
 };
 
-void Graph::setShortestPathes()
+void Graph::computePathes()
 {
-	bool isVisited[size] = {false};
+	vector<bool> isVisited(size, false);
 	for (int i = 0; i < size; ++i)
 	    distance.push_back(INT_MAX);
 	distance[ROOT] = 0;
@@ -68,11 +71,11 @@ void Graph::setShortestPathes()
 		}
 };
 
-void Graph::printShortestPathes()
+vector<int> Graph::getResult()
 {
-	for (int i = 0; i < size; ++i)
-		   cout << "From " << ROOT << " to " << i << ": " << distance[i] << endl;
+	return distance;
 };
+
 
 int main()
 {
@@ -92,8 +95,11 @@ int main()
 		cerr<<"Unable to open file." << endl;
 	}
     Graph graph(edges, vertices.size());
-    graph.setShortestPathes();
-    graph.printShortestPathes();
+    graph.computePathes();
+    auto distance = graph.getResult();
+    for (int i = 0; i < distance.size(); ++i)
+        cout << "From " << ROOT << " to " << i << ": " << distance[i] << endl;
 
     return 0;
 }
+
