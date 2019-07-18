@@ -22,7 +22,6 @@ void write_to_file(const string &file_name, map<int, T> &records_map){
 	ofstream output_file(file_name);
 	if(output_file) {
 		for(auto &record : records_map) {
-			cout << record.second.getFormatted() << endl;
 			output_file << record.second.getFormatted() << endl;
 		}
 		output_file.close();
