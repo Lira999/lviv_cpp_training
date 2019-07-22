@@ -2,10 +2,8 @@
 #include <string>
 #include "Exam.h"
 
-Exam::Exam(int &id, int &course_id, int &student_id, int &result):
-	_course_id{course_id}, _student_id{student_id}, _result{result} {
-		this -> _id = id;
-	}
+Exam::Exam(const int &id, const int &course_id, const int &student_id, const int &result):
+	IRecord(id), _course_id{course_id}, _student_id{student_id}, _result{result} {}
 
 int Exam::getId() const {
     return _id;

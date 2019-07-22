@@ -5,7 +5,7 @@
 
 class Exam : public IRecord {
 	public:
-		Exam(int &id, int &course_id, int &student_id, int &result);
+		Exam(const int &id, const int &course_id, const int &student_id, const int &result);
 		int getId() const override;
 		std::string getFormatted() const override;
 	private:

@@ -2,10 +2,7 @@
 #include <string>
 #include "Student.h"
 
-Student::Student(int &id, std::string &name) {
-    this -> _id = id;
-	this -> _name = name;
-}
+Student::Student(const int &id, const std::string &name): IRecord(id), IPerson(name) {}
 
 int Student::getId() const {
     return _id;

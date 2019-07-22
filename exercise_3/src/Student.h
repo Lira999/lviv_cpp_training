@@ -6,7 +6,7 @@
 
 class Student : public IPerson, public IRecord {
 	public:
-		Student(int &id, std::string &name);
+		Student(const int &id, const std::string &name);
 		int getId() const override;
 		std::string getName() const override;
 		std::string getFormatted() const override;

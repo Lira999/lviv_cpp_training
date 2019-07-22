@@ -2,10 +2,7 @@
 #include <string>
 #include "Teacher.h"
 
-Teacher::Teacher(int &id, std::string &name) {
-    this -> _id = id;
-	this -> _name = name;
-}
+Teacher::Teacher(const int &id, const std::string &name): IRecord(id), IPerson(name) {}
 
 int Teacher::getId() const {
     return _id;

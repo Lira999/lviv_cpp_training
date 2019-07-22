@@ -4,6 +4,7 @@
 
 class IRecord {
 	public:
+		IRecord(const int &id);
 		virtual int getId() const = 0;
 		virtual std::string getFormatted() const = 0;
 		virtual ~IRecord() = default;

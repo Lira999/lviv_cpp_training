@@ -2,9 +2,8 @@
 #include <string>
 #include "Course.h"
 
-Course::Course(int &id, std::string &name, int &teacher_id): _name{name}, _teacher_id{teacher_id} {
-	this -> _id = id;
-}
+Course::Course(const int &id, const std::string &name, const int &teacher_id):
+	IRecord(id), _name{name}, _teacher_id{teacher_id} {}
 
 int Course::getId() const {
     return _id;
