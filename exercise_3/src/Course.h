@@ -5,7 +5,7 @@
 
 class Course : public IRecord {
 	public:
-	    Course(std::istringstream &record);
+	    Course(int &id, std::string &name, int &teacher_id);
 		int getId() const override;
 		std::string getFormatted() const override;
 	private:

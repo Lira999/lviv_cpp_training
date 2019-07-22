@@ -1,13 +1,10 @@
-#include <stdexcept>
 #include <sstream>
 #include <string>
 #include "Student.h"
 
-Student::Student(std::istringstream &record) {
-    std::string buf;
-	std::getline(record, buf, ',');
-	_id = std::stoi(buf);
-	std::getline(record, _name, ',');
+Student::Student(int &id, std::string &name) {
+    this -> _id = id;
+	this -> _name = name;
 }
 
 int Student::getId() const {

@@ -5,7 +5,7 @@
 
 class Exam : public IRecord {
 	public:
-		Exam(std::istringstream &record);
+		Exam(int &id, int &course_id, int &student_id, int &result);
 		int getId() const override;
 		std::string getFormatted() const override;
 	private:

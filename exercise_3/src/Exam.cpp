@@ -1,19 +1,11 @@
-#include <stdexcept>
 #include <sstream>
 #include <string>
 #include "Exam.h"
 
-Exam::Exam(std::istringstream &record) {
-    std::string buf;
-	std::getline(record, buf, ',');
-	_id = std::stoi(buf);
-	std::getline(record, buf, ',');
-	_course_id = std::stoi(buf);
-	std::getline(record, buf, ',');
-	_student_id = std::stoi(buf);
-	std::getline(record, buf, ',');
-	_result = std::stoi(buf);
-}
+Exam::Exam(int &id, int &course_id, int &student_id, int &result):
+	_course_id{course_id}, _student_id{student_id}, _result{result} {
+		this -> _id = id;
+	}
 
 int Exam::getId() const {
     return _id;

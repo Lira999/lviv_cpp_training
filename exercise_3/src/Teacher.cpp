@@ -1,13 +1,10 @@
-#include <stdexcept>
 #include <sstream>
 #include <string>
 #include "Teacher.h"
 
-Teacher::Teacher(std::istringstream &record) {
-    std::string buf;
-	std::getline(record, buf, ',');
-	_id = std::stoi(buf);
-	std::getline(record, _name, ',');
+Teacher::Teacher(int &id, std::string &name) {
+    this -> _id = id;
+	this -> _name = name;
 }
 
 int Teacher::getId() const {
