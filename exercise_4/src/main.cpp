@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <map>
+#include <algorithm>
 #include <sstream>
 #include <vector>
 #include <memory>
@@ -11,84 +11,71 @@
 #include "Exam.h"
 #include "Student.h"
 #include "Teacher.h"
-#include "CommandHandler.h"
+#include "Show.h"
 
-using namespace std;
-
-void add_student_to_map(istringstream &iss_record, map<int, shared_ptr<IRecord> > &container) {
+void add_student_to_map(std::istringstream &iss_record, std::vector<std::pair<int, std::unique_ptr<IRecord> > > &container) {
 	int id;
-	string buf, name;
-	getline(iss_record, buf, ',');
-	id = stoi(buf);
-	getline(iss_record, name, ',');
-	shared_ptr<IRecord> student = make_shared<Student>(id, name);
-	container.insert(pair<int, shared_ptr<IRecord> >(student -> getId(), student));
+	std::string buf, name;
+	std::getline(iss_record, buf, ',');
+	id = std::stoi(buf);
+	std::getline(iss_record, name, ',');
+	std::unique_ptr<IRecord> student = std::make_unique<Student>(id, name);
+	container.emplace_back(student->getId(), std::move(student));
 }
 
-void add_teacher_to_map(istringstream &iss_record, map<int, shared_ptr<IRecord> > &container) {
+void add_teacher_to_map(std::istringstream &iss_record, std::vector<std::pair<int, std::unique_ptr<IRecord> > > &container) {
 	int id;
-	string buf, name;
-	getline(iss_record, buf, ',');
-	id = stoi(buf);
-	getline(iss_record, name, ',');
-	shared_ptr<IRecord> teacher = make_shared<Teacher>(id, name);
-	container.insert(pair<int, shared_ptr<IRecord> >(teacher -> getId(), teacher));
+	std::string buf, name;
+	std::getline(iss_record, buf, ',');
+	id = std::stoi(buf);
+	std::getline(iss_record, name, ',');
+	std::unique_ptr<IRecord> teacher = std::make_unique<Teacher>(id, name);
+	container.emplace_back(teacher -> getId(), std::move(teacher));
 }
 
-void add_course_to_map(istringstream &iss_record, map<int, shared_ptr<IRecord> > &container) {
+void add_course_to_map(std::istringstream &iss_record, std::vector<std::pair<int, std::unique_ptr<IRecord> > > &container) {
 	int id, teacher_id;
-	string buf, name;
-	getline(iss_record, buf, ',');
-	id = stoi(buf);
-	getline(iss_record, name, ',');
-	getline(iss_record, buf, ',');
+	std::string buf, name;
+	std::getline(iss_record, buf, ',');
+	id = std::stoi(buf);
+	std::getline(iss_record, name, ',');
+	std::getline(iss_record, buf, ',');
 	teacher_id = stoi(buf);
-	shared_ptr<IRecord> course = make_shared<Course>(id, name, teacher_id);
-	container.insert(pair<int, shared_ptr<IRecord> >(course -> getId(), course));
+	std::unique_ptr<IRecord> course = std::make_unique<Course>(id, name, teacher_id);
+	container.emplace_back(course -> getId(), std::move(course));
 }
 
-void add_exam_to_map(istringstream &iss_record, map<int, shared_ptr<IRecord> > &container) {
+void add_exam_to_map(std::istringstream &iss_record, std::vector<std::pair<int, std::unique_ptr<IRecord> > > &container) {
 	int id, course_id, student_id, result;
-	string buf;
-	getline(iss_record, buf, ',');
+	std::string buf;
+	std::getline(iss_record, buf, ',');
 	id = stoi(buf);
-	getline(iss_record, buf, ',');
-	course_id = stoi(buf);
-	getline(iss_record, buf, ',');
-	student_id = stoi(buf);
-	getline(iss_record, buf, ',');
-	result = stoi(buf);
-	shared_ptr<IRecord> exam = make_shared<Exam>(id, course_id, student_id, result);
-	container.insert(pair<int, shared_ptr<IRecord> >(exam -> getId(), exam));
-}
-
-void write_to_file(const string &file_name, const map<int, shared_ptr<IRecord> > &records_map){
-	ofstream output_file(file_name);
-	if(output_file) {
-		for(const auto &record: records_map) {
-			output_file << record.second -> getFormatted() << endl;
-		}
-	} else {
-		cerr << "Unable to create file." << endl;
-	}
+	std::getline(iss_record, buf, ',');
+	course_id = std::stoi(buf);
+	std::getline(iss_record, buf, ',');
+	student_id = std::stoi(buf);
+	std::getline(iss_record, buf, ',');
+	result = std::stoi(buf);
+	std::unique_ptr<IRecord> exam = std::make_unique<Exam>(id, course_id, student_id, result);
+	container.emplace_back(exam -> getId(), std::move(exam));
 }
 
 int main(int args, char **argv) {
 	if (args > 1) {
-		ifstream input_file("./src/records.txt");
-		string line, marker, command_type, table_name = "";
+		std::ifstream input_file("./src/records.txt");
+		std::string line, marker, command_type, table_name = "";
 
-		map<int, shared_ptr<IRecord> > teachers;
-		map<int, shared_ptr<IRecord> > students;
-		map<int, shared_ptr<IRecord> > courses;
-		map<int, shared_ptr<IRecord> > exams;
+		std::vector<std::pair<int, std::unique_ptr<IRecord> > > teachers;
+		std::vector<std::pair<int, std::unique_ptr<IRecord> > > students;
+		std::vector<std::pair<int, std::unique_ptr<IRecord> > > courses;
+		std::vector<std::pair<int, std::unique_ptr<IRecord> > > exams;
 
 		if (input_file.is_open()) {
-			while (getline(input_file, line)) {
-				istringstream iss_record(line);
-				getline(iss_record, marker, ',');
+			while (std::getline(input_file, line)) {
+				std::istringstream iss_record(line);
+				std::getline(iss_record, marker, ',');
 
-				 if (marker == "T") {
+				if (marker == "T") {
 					add_teacher_to_map(iss_record, teachers);
 				} else if (marker == "S") {
 					add_student_to_map(iss_record, students);
@@ -99,26 +86,26 @@ int main(int args, char **argv) {
 				}
 			}
 		} else {
-			cerr << "Unable to open file." << endl;
+			std::cerr << "Unable to open file." << std::endl;
+			return 1;
 		}
 
-		map<string, map<int, shared_ptr<IRecord> > > container;
-		container.insert(pair<string, map<int, shared_ptr<IRecord> > >("TEACHERS", teachers));
-		container.insert(pair<string, map<int, shared_ptr<IRecord> > >("STUDENTS", students));
-		container.insert(pair<string, map<int, shared_ptr<IRecord> > >("COURSES", courses));
-		container.insert(pair<string, map<int, shared_ptr<IRecord> > >("EXAMS", exams));
+		std::vector<std::pair<std::string, std::vector<std::pair<int, std::unique_ptr<IRecord> > > > > container;
+		sort(teachers.begin(), teachers.end());
+		container.emplace_back("TEACHERS", std::move(teachers));
+		sort(students.begin(), students.end());
+		container.emplace_back("STUDENTS", std::move(students));
+		sort(courses.begin(), courses.end());
+		container.emplace_back("COURSES", std::move(courses));
+		sort(exams.begin(), exams.end());
+		container.emplace_back("EXAMS", std::move(exams));
 
 		command_type = argv[1];
 		if (args > 2) {
 			table_name = argv[2];
 		}
-		CommandHandler command(container, command_type, table_name);
+		Show command(container, command_type, table_name);
 		command.execute();
-
-		write_to_file("./Cources.txt", courses);
-		write_to_file("./Exams.txt", exams);
-		write_to_file("./Students.txt", students);
-		write_to_file("./Teachers.txt", teachers);
 	}
 
 	return 0;
